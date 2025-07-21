@@ -26,9 +26,10 @@ app.get('/', async (req, res) => {
 
 // the index route
 app.get("/fruits", async (req, res) => {
-    const allFruits = await Fruit.find();
-    console.log(allFruits); // log all the fruits!
-    res.send("Welcome to the index page!");
+    const allFruits = await Fruit.find({});
+    // console.log(allFruits); // log all the fruits!
+    // res.send("Welcome to the fruit index page!");
+    res.render('fruits/index.ejs', {fruits: allFruits})
 });
 
 // get new fruits
