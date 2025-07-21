@@ -15,13 +15,36 @@ mongoose.connection.on('connected', () => {
 // Import the Fruit model:
 const Fruit = require("./models/fruit.js");
 
+// adding middleware for app
+app.use(express.urlencoded({ extended: false }));
+
+
 // "GET /" per server's first message
 app.get('/', async (req, res) => {
     res.render("index.ejs")
 })
 
-app.get('/fruits/new', (req, res) => {
+// the index route
+app.get("/fruits", async (req, res) => {
+    const allFruits = await Fruit.find();
+    console.log(allFruits); // log all the fruits!
+    res.send("Welcome to the index page!");
+});
+
+// get new fruits
+app.get('/fruits/new', async (req, res) => {
     res.render('fruits/new.ejs')
+})
+
+// POST /fruits
+app.post('/fruits', async (req, res) => {
+    if (req.body.isReadyToEat === "on") {
+        req.body.isReadyToEat = true;
+    } else {
+        req.body.isReadyToEat = false;
+    }
+    await Fruit.create(req.body); // this line is the database transaction
+    res.redirect('/fruits/new')
 })
 
 app.listen(3000, () => {
