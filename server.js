@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const methodOverride = require("method-override"); // new
 const morgan = require("morgan"); //new
 
+// model/ connection logic
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
@@ -63,6 +64,13 @@ app.delete("/fruits/:fruitId", async (req, res) => {
     await Fruit.findByIdAndDelete(req.params.fruitId);
     res.redirect("/fruits");
 })
+
+app.get("/fruits/:fruitId/edit", async (req, res) => {
+  const foundFruit = await Fruit.findById(req.params.fruitId);
+  res.render("fruits/edit.ejs", {
+    fruit: foundFruit,
+  });
+});
 
 app.listen(3000, () => {
     console.log("Listening on port 3000")
